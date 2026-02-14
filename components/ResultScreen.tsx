@@ -36,9 +36,13 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
 
     setIsGenerating(true);
     // Sound effect
-    const audio = new Audio(SOUNDS.CLICK);
-    audio.volume = 0.4;
-    audio.play().catch(e => console.debug(e));
+    try {
+        const audio = new Audio(SOUNDS.CLICK);
+        audio.volume = 0.4;
+        audio.play().catch(e => console.debug(e));
+    } catch (e) {
+        // Ignore audio errors
+    }
 
     try {
         // Wait a slight delay to ensure UI is ready if needed, then capture
@@ -46,8 +50,12 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
             cacheBust: true, 
             pixelRatio: 2,
             filter: (node) => {
-                // Exclude the watering button from the screenshot if it has a specific class
-                return !node.classList?.contains('exclude-from-capture');
+                // Safely exclude the watering button
+                // Check if it's an element before accessing classList
+                if (node instanceof HTMLElement) {
+                     return !node.classList.contains('exclude-from-capture');
+                }
+                return true;
             }
         });
         setPosterUrl(dataUrl);
@@ -64,9 +72,13 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
     if (isWatering) return;
     
     setIsWatering(true);
-    const audio = new Audio(SOUNDS.WATER);
-    audio.volume = 0.5;
-    audio.play().catch(e => console.debug(e));
+    try {
+        const audio = new Audio(SOUNDS.WATER);
+        audio.volume = 0.5;
+        audio.play().catch(e => console.debug(e));
+    } catch (e) {
+        // Ignore audio errors
+    }
 
     // Reset animation state after effect completes
     setTimeout(() => setIsWatering(false), 1500);
