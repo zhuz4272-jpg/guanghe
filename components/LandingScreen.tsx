@@ -46,6 +46,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({ onGenerate }) => {
             <img 
               src={IMAGES.SEED} 
               alt="Seed in sand" 
+              crossOrigin="anonymous"
               className="w-full h-full object-cover scale-110"
             />
             {/* Overlay Gradient */}

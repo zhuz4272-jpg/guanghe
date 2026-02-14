@@ -76,9 +76,11 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
     <div className="relative h-[100dvh] w-full flex flex-col items-center justify-center bg-white overflow-hidden font-display text-gray-900 select-none touch-none">
       
       {/* Dopamine Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 left-0 w-full h-full opacity-30" 
-             style={{ backgroundImage: `url(${IMAGES.TEXTURE_CUBES})` }}></div>
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {/* Abstract Texture Background */}
+         <div className="absolute inset-0 opacity-10 bg-repeat" 
+             style={{ backgroundImage: `url(${IMAGES.TEXTURE_CUBES})`, backgroundSize: '300px' }}></div>
+        
         {/* Blobs */}
         <div className="absolute top-[10%] left-[10%] w-64 h-64 bg-dopa-pink rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" />
         <div className="absolute bottom-[20%] right-[10%] w-72 h-72 bg-dopa-cyan rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float-delayed" />
@@ -100,15 +102,17 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
 
           {/* Image Area - Responsive Height to fit screen */}
           <div className="relative h-[25vh] aspect-square mb-4 rounded-3xl overflow-hidden flex items-center justify-center bg-gradient-to-br from-dopa-lime/20 to-dopa-cyan/20 border-4 border-white shadow-inner group">
-             <div className="absolute inset-0 opacity-30" style={{ backgroundImage: `url(${IMAGES.TEXTURE_DIAMONDS})` }}></div>
+             {/* Texture overlay */}
+             <div className="absolute inset-0 opacity-30 mix-blend-overlay" style={{ backgroundImage: `url(${IMAGES.TEXTURE_DIAMONDS})`, backgroundSize: '100px' }}></div>
              
              {/* Wrapper for breathing animation */}
-             <div className="relative z-10 w-[80%] h-[80%] flex items-center justify-center animate-breathe">
+             <div className="relative z-10 w-full h-full flex items-center justify-center animate-breathe p-4">
                <img 
                  src={image} 
                  alt={name} 
-                 className={`w-full h-full object-contain drop-shadow-2xl transition-all duration-500 filter contrast-125 saturate-150
-                   ${isWatering ? 'scale-125 rotate-3 brightness-110' : 'hover:rotate-3 hover:scale-110'}`}
+                 crossOrigin="anonymous"
+                 className={`w-full h-full object-cover rounded-2xl drop-shadow-2xl transition-all duration-500 filter contrast-110 saturate-125
+                   ${isWatering ? 'scale-105 rotate-2 brightness-110' : 'hover:rotate-2 hover:scale-105'}`}
                />
              </div>
 

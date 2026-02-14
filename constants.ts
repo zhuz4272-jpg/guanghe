@@ -1,15 +1,21 @@
 import { PlantData } from './types';
 
-// Images from the provided HTML source
+// Images replaced with reliable Unsplash sources for better stability and CORS support
 export const IMAGES = {
-  SEED: "https://lh3.googleusercontent.com/aida-public/AB6AXuBF34Ii0plS7mdXWwWl1j-6Hu6oO6VoP8ARIDrctcTCFpMwHWs0Btgpd9w-V3RA8F0uh2BXPy1epLCRc7MnYZ68_a7eYRBr2a0rlHsjbFRuHq5AvhI9eWORCXHZUC2kNzcjCJ2dMmbIDmfTRB5Z7bz0eessgS-Nf-dqUbqc4Y6MEl1Y73eb8rBQaNAqrTbwnJSoOmWFYRniZfHqw2QDLTMaGubBwvLpLwl6e9W5c5mIotl4JXm6_nEzhH0IZnPIQctUDeiWVkEXNLw9",
-  CACTUS: "https://lh3.googleusercontent.com/aida-public/AB6AXuDEM-qbcyRXYlPXv93XmvhABcYik8DYRUaPUkq2FlA35zC0P_2kDl_hwA0XejOtXs5IHehdi6btKbV2fUFfg60bUW2_bCsz8QTMqMo1ENfFV-i0TtLHW7mwaAqLPDZshCMiItKb1OHcXJKPusqElJijOGcQ1zKmgHytJxK6sQX4CmjdnhS-iE9lUQrvf_WzcMO1PX2-InpajrbGn0saeJfL9OSOfxf2EzvnUhAq3zeFjcbbQ_amA-klbHIdcrHVSMVZenHaCbid50Tz",
-  // Using high-quality 3D fluent emojis as placeholders for other plants to match the vibe
-  MIMOSA: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals%20Nature/Potted%20Plant.png",
-  MONSTERA: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals%20Nature/Leaf%20Fluttering%20in%20Wind.png", 
-  ROSE: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals%20Nature/Rose.png",
-  TEXTURE_CUBES: "https://www.transparenttextures.com/patterns/cubes.png",
-  TEXTURE_DIAMONDS: "https://www.transparenttextures.com/patterns/diagmonds-light.png"
+  // A small sprout in soil
+  SEED: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?q=80&w=800&auto=format&fit=crop",
+  // Cactus
+  CACTUS: "https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?q=80&w=800&auto=format&fit=crop",
+  // Mimosa/Fern (using a fern-like plant)
+  MIMOSA: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?q=80&w=800&auto=format&fit=crop",
+  // Monstera Leaf
+  MONSTERA: "https://images.unsplash.com/photo-1637967886160-fd78dc39b8dc?q=80&w=800&auto=format&fit=crop",
+  // Rose
+  ROSE: "https://images.unsplash.com/photo-1548565495-a69251842c3b?q=80&w=800&auto=format&fit=crop",
+  
+  // Abstract Textures (Replacing http transparenttextures with Unsplash abstract for better HTTPS support)
+  TEXTURE_CUBES: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop",
+  TEXTURE_DIAMONDS: "https://images.unsplash.com/photo-1550684847-75bdda21cc95?q=80&w=1000&auto=format&fit=crop"
 };
 
 export const SOUNDS = {
