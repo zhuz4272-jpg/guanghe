@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Download, Zap, ShieldAlert, Droplets, Sparkles, Eye, StopCircle, Sun, Coffee, Star, Camera, X, Share2, RefreshCw, Loader2, Save } from 'lucide-react';
 import { IMAGES, SOUNDS } from '../constants';
 import { PlantData } from '../types';
-import { toPng } from 'html-to-image';
+import { toBlob } from 'html-to-image';
 
 interface ResultScreenProps {
   onReset: () => void;
@@ -45,9 +45,9 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
     }
 
     try {
-        // Wait a slight delay to ensure UI is ready if needed, then capture
+        // 1. Generate Blob for better handling (Share API, efficient URL)
         // CRITICAL: useCORS: true allows capturing images from external domains like Unsplash
-        const dataUrl = await toPng(cardRef.current, { 
+        const blob = await toBlob(cardRef.current, { 
             cacheBust: true, 
             pixelRatio: 2,
             useCORS: true, 
@@ -60,7 +60,46 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
                 return true;
             }
         });
-        setPosterUrl(dataUrl);
+
+        if (!blob) throw new Error("Image generation failed");
+
+        // 2. Create a file for the Web Share API
+        const file = new File([blob], `oasis-plant-${Date.now()}.png`, { type: 'image/png' });
+
+        // 3. Try "Native" Share/Save (Works best on Mobile)
+        let shareSuccess = false;
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({
+                    files: [file],
+                    title: 'Oasis Photosynthesis',
+                    text: '我的植物人格 🌱'
+                });
+                shareSuccess = true;
+            } catch (shareError) {
+                console.log('Share dismissed or failed', shareError);
+            }
+        } 
+        
+        if (!shareSuccess) {
+            // 4. Fallback: Trigger download (Works best on Desktop)
+            // Note: On iOS Safari, this might just open the image or save to "Files", not "Photos".
+            const link = document.createElement('a');
+            link.download = `oasis-plant-${Date.now()}.png`;
+            link.href = URL.createObjectURL(blob);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 5. Always show the modal as the visual "result" state so they can see what was generated.
+        // This is crucial for iOS users who might need to Long-Press if Share API wasn't used/failed.
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPosterUrl(reader.result as string);
+        };
+        reader.readAsDataURL(blob);
+
     } catch (err) {
         console.error('Failed to generate poster', err);
         alert('生成图片失败，这可能是由于网络图片跨域限制。请重试。');
@@ -259,7 +298,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
                         onClick={handleDownloadImage}
                         className="text-white bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors border border-white/10"
                     >
-                        <Save size={14} /> 保存原图
+                        <Save size={14} /> 重新下载
                     </button>
                     <button onClick={onReset} className="text-white/70 hover:text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors">
                         <RefreshCw size={14} /> 再测一次
