@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Download, Zap, ShieldAlert, Droplets, Sparkles, Eye, StopCircle, Sun, Coffee, Star, Camera, X, Share2, RefreshCw, Loader2 } from 'lucide-react';
+import { Download, Zap, ShieldAlert, Droplets, Sparkles, Eye, StopCircle, Sun, Coffee, Star, Camera, X, Share2, RefreshCw, Loader2, Save } from 'lucide-react';
 import { IMAGES, SOUNDS } from '../constants';
 import { PlantData } from '../types';
 import { toPng } from 'html-to-image';
@@ -46,12 +46,14 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
 
     try {
         // Wait a slight delay to ensure UI is ready if needed, then capture
+        // CRITICAL: useCORS: true allows capturing images from external domains like Unsplash
         const dataUrl = await toPng(cardRef.current, { 
             cacheBust: true, 
             pixelRatio: 2,
+            useCORS: true, 
+            skipAutoScale: true,
             filter: (node) => {
                 // Safely exclude the watering button
-                // Check if it's an element before accessing classList
                 if (node instanceof HTMLElement) {
                      return !node.classList.contains('exclude-from-capture');
                 }
@@ -61,10 +63,20 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
         setPosterUrl(dataUrl);
     } catch (err) {
         console.error('Failed to generate poster', err);
-        alert('生成卡片失败，请截图保存');
+        alert('生成图片失败，这可能是由于网络图片跨域限制。请重试。');
     } finally {
         setIsGenerating(false);
     }
+  };
+
+  const handleDownloadImage = () => {
+    if (!posterUrl) return;
+    const link = document.createElement('a');
+    link.download = `oasis-plant-${Date.now()}.png`;
+    link.href = posterUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const handleWater = (e: React.MouseEvent) => {
@@ -122,7 +134,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
                <img 
                  src={image} 
                  alt={name} 
-                 crossOrigin="anonymous"
+                 crossOrigin="anonymous" 
                  className={`w-full h-full object-cover rounded-2xl drop-shadow-2xl transition-all duration-500 filter contrast-110 saturate-125
                    ${isWatering ? 'scale-105 rotate-2 brightness-110' : 'hover:rotate-2 hover:scale-105'}`}
                />
@@ -235,12 +247,21 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ onReset, data }) => 
                  <img src={posterUrl} alt="Result Card" className="w-full h-auto object-contain rounded-[2rem] border-2 border-gray-100" />
               </div>
 
-              <div className="mt-8 text-center space-y-4">
+              <div className="mt-6 text-center w-full space-y-4">
+                 {/* Primary Instruction */}
                  <div className="inline-block bg-dopa-lime text-black px-6 py-2 rounded-full font-black text-sm shadow-neobrutal border-2 border-black animate-bounce">
                     长按图片保存到相册
                  </div>
-                 <div className="flex gap-4 justify-center">
-                    <button onClick={onReset} className="text-white/70 text-sm font-bold hover:text-white flex items-center gap-2 bg-white/10 px-4 py-2 rounded-xl">
+                 
+                 {/* Secondary Actions */}
+                 <div className="flex gap-4 justify-center items-center">
+                    <button 
+                        onClick={handleDownloadImage}
+                        className="text-white bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors border border-white/10"
+                    >
+                        <Save size={14} /> 保存原图
+                    </button>
+                    <button onClick={onReset} className="text-white/70 hover:text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors">
                         <RefreshCw size={14} /> 再测一次
                     </button>
                  </div>
